@@ -23,6 +23,7 @@ load(
     "grpc_upb_proto_library",
     "grpc_upb_proto_reflection_library",
 )
+load("//third_party/bazel_rules/rules_cc/cc:cc_library.bzl", "cc_library")
 
 licenses(["reciprocal"])
 
@@ -9873,6 +9874,7 @@ grpc_cc_library(
         "closure",
         "connectivity_state",
         "context",
+        "experiments",
         "flow_control_manager",
         "for_each",
         "goaway",
@@ -9902,6 +9904,7 @@ grpc_cc_library(
         "metadata",
         "metadata_batch",
         "metadata_info",
+        "metrics",
         "mpsc",
         "ph2_reclaimer",
         "ph2_stream",
@@ -12082,7 +12085,9 @@ grpc_cc_library(
         "absl/types:span",
     ],
     deps = [
+        "arena",
         "channel_args",
+        "context",
         "grpc_check",
         "instrument",
         "no_destruct",
@@ -13352,3 +13357,18 @@ grpc_cc_library(
 )
 
 grpc_generate_one_off_internal_targets()
+
+cc_library(
+    name = "client_channel/client_channel",
+    srcs = ["client_channel/client_channel.cc"],
+    hdrs = ["client_channel/client_channel.h"],
+    deps = [
+        "//third_party/absl/cleanup",
+        "//third_party/absl/log",
+        "//third_party/absl/status",
+        "//third_party/absl/status:statusor",
+        "//third_party/absl/strings",
+        "//third_party/absl/strings:cord",
+        "//third_party/absl/strings:string_view",
+    ],
+)
