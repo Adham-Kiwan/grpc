@@ -699,6 +699,17 @@ TEST_F(XdsOverrideHostTest, IdleTimer) {
   EXPECT_THAT(timer_durations, ::testing::ElementsAre(Duration::Seconds(55)));
 }
 
+TEST_F(XdsOverrideHostTest, SubchannelCreationFails) {
+  const std::array<absl::string_view, 3> kAddresses = {
+      "ipv4:127.0.0.1:441", "ipv4:127.0.0.1:442", "ipv4:127.0.0.1:443"};
+  auto* subchannel = CreateSubchannel(kAddresses[0]);
+  subchannel->set_fail_creation(true);
+  EXPECT_EQ(UpdateXdsOverrideHostPolicy(kAddresses), absl::OkStatus());
+  ExpectReresolutionRequest();
+  ExpectRoundRobinStartup(
+      absl::Span<const absl::string_view>(kAddresses).subspan(1));
+}
+
 }  // namespace
 }  // namespace testing
 }  // namespace grpc_core

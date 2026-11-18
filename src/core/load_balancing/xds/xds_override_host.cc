@@ -999,6 +999,7 @@ RefCountedPtr<SubchannelInterface> XdsOverrideHostLb::Helper::CreateSubchannel(
   }
   auto subchannel = parent()->channel_control_helper()->CreateSubchannel(
       address, per_address_args, args);
+  if (subchannel == nullptr) return nullptr;
   return parent()->AdoptSubchannel(address, std::move(subchannel));
 }
 
